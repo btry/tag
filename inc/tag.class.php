@@ -148,8 +148,8 @@ class PluginTagTag extends CommonDropdown {
          $default_collation = DBConnection::getDefaultCollation();
 
          $DB->query("CREATE TABLE IF NOT EXISTS `$table` (
-            `id`           int NOT NULL auto_increment,
-            `entities_id`  int NOT NULL DEFAULT '0',
+            `id`           int unsigned NOT NULL auto_increment,
+            `entities_id`  int unsigned NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '1',
             `name`         varchar(255) NOT NULL DEFAULT '',
             `comment`      text,
@@ -429,26 +429,6 @@ class PluginTagTag extends CommonDropdown {
          && $params['item'] instanceof CommonDBTM) {
          $item     = $params['item'];
          $itemtype = get_class($item);
-
-         // KnowbaseItem is special form, i think we want to skip tab detection
-         if (!$item instanceof KnowbaseItem) {
-            // we want tag input only for primary form (not ticket solution for example)
-            $callers   = debug_backtrace();
-            /*Toolbox::logDebug($params['options']);
-            Toolbox::backtrace();*/
-            foreach ($callers as $call) {
-               if ($call['function'] == 'displayTabContentForItem'
-                  // ticket solution is a pain to detect, direct exclusion
-                  || $call['function'] == 'showSolutionForm') {
-                  return false;
-               }
-            }
-            // no sub objects form (like followups and task)
-            if (isset($params['options']['parent'])
-               && $params['options']['parent'] instanceof CommonDBTM) {
-               return false;
-            }
-         }
 
          if (self::canItemtype($itemtype)) {
             // manage values after a redirect (ex ticket creation, after a cat change)
