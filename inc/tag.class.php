@@ -104,7 +104,7 @@ class PluginTagTag extends CommonDropdown {
       echo "<tr class='line1 tab_bg_2'>";
       echo "<td><label>".__('HTML color', 'tag')."</label></td>";
       echo "<td>";
-      Html::showColorField('color', ['value' => $this->fields['color']]);
+      Html::showColorField('color', ['value' => $this->fields['color'] ?: '#DDDDDD']);
       echo "</td>";
       echo "</tr>";
 
@@ -394,7 +394,8 @@ class PluginTagTag extends CommonDropdown {
             $out = implode(", ", $itemtype_names);
             return $out;
          case 'color' :
-            return "<div style='background-color: $values[$field];'>&nbsp;</div>";
+            $color = $values[$field] ?: '#DDDDDD';
+            return "<div style='background-color: $color;'>&nbsp;</div>";
       }
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -507,10 +508,11 @@ class PluginTagTag extends CommonDropdown {
 
          $content = "<div style='display: flex; flex-wrap: wrap;'>";
          foreach ($iterator as $data) {
-            $title = htmlentities($data['comment']);
-            $name = htmlentities($data['name']);
-            $textcolor = idealTextColor($data['color']);
-            $style = "background-color: {$data['color']}; color: {$textcolor};";
+            $title = $data['comment'];
+            $name = $data['name'];
+            $color = $data['color'] ?: '#DDDDDD';
+            $textcolor = idealTextColor($color);
+            $style = "background-color: {$color}; color: {$textcolor};";
             $content .= "<span class='tag_choice' style='{$style}' title='{$title}'>{$name}</span>&nbsp;&nbsp;";
          }
          $content .= "</div>";
@@ -670,14 +672,9 @@ class PluginTagTag extends CommonDropdown {
    static function getSingleTag($tag_id, $separator = '') {
       $plugintagtag = new self();
       $plugintagtag->getFromDB($tag_id);
-      $color = $plugintagtag->fields["color"];
-      $style = "";
-      if (!empty($color)) {
-         $inv_color = idealTextColor($color);
-         $style .= "background-color: $color; border: 1px solid $inv_color; color: $inv_color";
-      } else {
-         $style .= "border: 1px solid #BBB;";
-      }
+      $color = $plugintagtag->fields["color"] ?: '#DDDDDD';
+      $inv_color = idealTextColor($color);
+      $style = "background-color: $color; border: 1px solid $inv_color; color: $inv_color";
 
       return "<span class='select2-search-choice tag_choice'
                     style='padding-left:5px;$style'>".
