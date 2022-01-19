@@ -54,9 +54,9 @@ class PluginTagTagItem extends CommonDBRelation {
          $default_collation = DBConnection::getDefaultCollation();
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-               `id` INT NOT NULL AUTO_INCREMENT,
-               `plugin_tag_tags_id` INT NOT NULL DEFAULT '0',
-               `items_id` INT NOT NULL DEFAULT '1',
+               `id` INT unsigned NOT NULL AUTO_INCREMENT,
+               `plugin_tag_tags_id` INT unsigned NOT NULL DEFAULT '0',
+               `items_id` INT unsigned NOT NULL DEFAULT '1',
                `itemtype` VARCHAR(255) NOT NULL DEFAULT '',
                PRIMARY KEY (`id`),
                UNIQUE INDEX `unicity` (`itemtype`, `items_id`, `plugin_tag_tags_id`)
