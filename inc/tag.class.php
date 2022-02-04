@@ -142,15 +142,16 @@ class PluginTagTag extends CommonDropdown {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = getTableForItemType(__CLASS__);
 
       if (!$DB->tableExists($table)) {
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $DB->query("CREATE TABLE IF NOT EXISTS `$table` (
-            `id`           int unsigned NOT NULL auto_increment,
-            `entities_id`  int unsigned NOT NULL DEFAULT '0',
+            `id`           int {$default_key_sign} NOT NULL auto_increment,
+            `entities_id`  int {$default_key_sign} NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '1',
             `name`         varchar(255) NOT NULL DEFAULT '',
             `comment`      text,

@@ -47,16 +47,17 @@ class PluginTagTagItem extends CommonDBRelation {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = getTableForItemType(__CLASS__);
 
       if (!$DB->tableExists($table)) {
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-               `id` INT unsigned NOT NULL AUTO_INCREMENT,
-               `plugin_tag_tags_id` INT unsigned NOT NULL DEFAULT '0',
-               `items_id` INT unsigned NOT NULL DEFAULT '1',
+               `id` INT {$default_key_sign} NOT NULL AUTO_INCREMENT,
+               `plugin_tag_tags_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
+               `items_id` INT {$default_key_sign} NOT NULL DEFAULT '1',
                `itemtype` VARCHAR(255) NOT NULL DEFAULT '',
                PRIMARY KEY (`id`),
                UNIQUE INDEX `unicity` (`itemtype`, `items_id`, `plugin_tag_tags_id`)
